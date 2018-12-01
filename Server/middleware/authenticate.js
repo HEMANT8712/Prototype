@@ -4,10 +4,8 @@ const {secret} = require('../config');
 
 module.exports = (req,res,next) => {
     let token = req.header('x-auth');
-
-    try{    
+    try{   
         let payload = jwt.verify(token, secret);
-
         User.findById(payload._id)
             .then(user =>{
                 if(!user){

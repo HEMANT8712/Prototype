@@ -18,17 +18,26 @@ const User = new mongoose.Schema({
     password:{
         type:String,
         required:true,
-        //minlength:6,
+        minlength:6,
         trim:true,
     },
     username:{
         type:String,
         required:true,
-        minlength:8,
+        minlength:4,
         trim:true,
         unique:true,
     },
-
+    connect_id: {
+        type: String,
+        required:true,
+        trim:true,
+    },
+    iotdevice_id: {
+        type: String,
+        required:true,
+        trim:true,
+    },
 });
 
 User.pre('save', function(next){
