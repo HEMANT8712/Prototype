@@ -22,7 +22,6 @@ router.post('/registerconnect', authenticate, (req, res) => {
 
     const { username, connect_id } = req.body;
     User.findOne({ connect_id }).then((user) => {
-        console.log(user);
         if (user !== null) {
             return res.status(401).send();  //404- Connect ID Already Exist
         }
@@ -93,4 +92,32 @@ router.post('/registeriotdevice', authenticate, (req, res) => {
     })
 });
 
+router.post('/generatedevicekey', authenticate, (req, res) => {
+     
+    const { username, iotdevice_id } = req.body;
+
+    User.findOne({ iotdevice_id }).then((user) => {
+        if (user === null) {
+            return res.status(401).send();  //404- IoT Device did not Exist
+        }
+        if(user.username === username){
+            let new_secret = secret.concat(iotdevice_id);
+            let token = jwt.sign({_id:user._id},new_secret);
+            let obj = {
+                key_id: token,
+            };
+            console.log("key_id :" + token);
+            return res.status(201).send(obj);   // 201- Created
+        }
+        else{
+
+            return res.status(401).send({ error: err });
+        }
+    }).catch((err) => {
+        if (err) {
+            return res.status(401).send(err);
+        }
+        return res.status(401).send();
+    })
+})
 module.exports = router;

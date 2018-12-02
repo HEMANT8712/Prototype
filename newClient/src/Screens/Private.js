@@ -29,6 +29,10 @@ class PrivateScreen extends Component{
         })
     }
     handleGenerateKey= () =>{
+        this.props.navigator.push({
+            screen:'newClient.GenerateKeyScreen',
+            title:' IoT Device Key Generation'
+        })
     }
     handleLockOpen= () =>{
     }

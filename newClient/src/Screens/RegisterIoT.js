@@ -51,7 +51,7 @@ class RegisterIoTScreen extends Component{
         const{username, iotdevice_id} = this.state; 
         //alert(username + iotdevice_id + this.state.uniquetoken);
         if(username.trim() && iotdevice_id.trim()){
-                    axios.post('http://172.17.90.128:3000/private/registeriotdevice', {
+                    axios.post('http://172.17.83.103:3000/private/registeriotdevice', {
                         username,
                         iotdevice_id,
                     },{headers:{

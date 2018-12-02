@@ -1,4 +1,6 @@
 
+
+
 import React, { Component } from 'react';
 import { StyleSheet, View, Image, AsyncStorage } from 'react-native';
 import Input from '../Compoenents/Input/input';
@@ -6,23 +8,16 @@ import CustomButton from '../Compoenents/Button/Button';
 import axios from 'axios';
 import startPrivate from './startPrivateScreen';
 
-class RegisterConnectScreen extends Component{
+class GenerateKeyScreen extends Component{
     static navigatorStyle = {
         navBarHidden: true,
     }
 
     state={
         username: '',
-        connect_id:'',
+        iotdevice_id:'',
         uniquetoken:'',
 
-    }
-    handleChangeTokenId= text =>{
-        this.setState(() =>{
-            return{
-                uniquetoken:text,
-            }
-        });
     }
     handleChangeUsername= text =>{
         this.setState(() =>{
@@ -31,10 +26,18 @@ class RegisterConnectScreen extends Component{
             }
         });
     }
-    handleChangeConnectId= text =>{
+    handleChangeTokenId= text =>{
         this.setState(() =>{
             return{
-                connect_id:text,
+                uniquetoken:text,
+            }
+        });
+    }
+
+    handleChangeIoTId = text => {
+        this.setState(() => {
+            return {
+                iotdevice_id: text,
             }
         });
         AsyncStorage.getItem('x-auth').then((token) => {
@@ -45,31 +48,41 @@ class RegisterConnectScreen extends Component{
         });
     }
 
-
-    handleConnectRegister = () =>{
-        const{username,connect_id } = this.state; 
-        if(username.trim() && connect_id.trim()){
-                    axios.post('http://172.17.83.103:3000/private/registerconnect', {
+    handleGenerateKey = () =>{
+        const{username, iotdevice_id} = this.state; 
+        //alert(username + iotdevice_id + this.state.uniquetoken);
+        if(username.trim() && iotdevice_id.trim()){
+                    axios.post('http://172.17.83.103:3000/private/generatedevicekey', {
                         username,
-                        connect_id,
+                        iotdevice_id,
                     },{headers:{
                         'x-auth': this.state.uniquetoken
                     }})
                     .then((response) =>{
-                                        alert('Successful');
-                                        startPrivate();
+                        let token_key = response.data['key_id'];
+                        if (token_key) {
+                            AsyncStorage.setItem('key_id', token_key).then(() =>{        
+                                startPrivate();
+                            })
+                            .catch((err) => {
+                                alert('error');
+                            });
+                        }
+                        else {
+                            alert("Key Generation Fail, Try Again");
+                        }
                     })
                     .catch((err) => {
-                        alert('Invalid username or Connect_Id!');
+                      //  alert('Invalid username or IoT Device_Id!');
                     });
          } else {
-             alert('Username and Connect_ID fields are both Required!');
+             alert('Username and IoT Device_ID fields are both Required!');
          }
     } 
     render() {
         return (
             <View style={styles.container}>
-                <Image 
+                <Image
                      source={require('../../assets/images/logo.png')}
                      style={styles.img1} 
                  />
@@ -80,9 +93,9 @@ class RegisterConnectScreen extends Component{
                         value={this.state.username}
                     />
                     <Input 
-                        placeholder="Connect_Id" 
-                        onChangeText={this.handleChangeConnectId}
-                        value={this.state.connect_id}
+                        placeholder="IoT Device_Id" 
+                        onChangeText={this.handleChangeIoTId}
+                        value={this.state.iotdevice_id}
                     />
                 </View>
                 <View 
@@ -92,7 +105,7 @@ class RegisterConnectScreen extends Component{
                         justifyContent:'space-around',
                         }}
                 >
-                    <CustomButton text="Register"  onPress={this.handleConnectRegister} />
+                    <CustomButton text="Generate"  onPress={this.handleGenerateKey} />
                 </View>
                 
             </View>
@@ -128,4 +141,4 @@ const styles = StyleSheet.create({
     }, 
 });
 
-export default RegisterConnectScreen ;
+export default GenerateKeyScreen ;
