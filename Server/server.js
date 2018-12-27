@@ -1,35 +1,29 @@
-const express = require('express');
-const app = express();
-const mongoose = require('./db/mongoose');
+const path = require('path')
+const fs = require('fs')
+const express = require('express')
+const app = express()
+const https = require('https')
 const userRoutes = require('./routes/user-routes');
 const bodyParser = require('body-parser');
 const private = require('./routes/private');
+const mongoose = require('./db/mongoose');
+
+
+const certOptions = {
+    key: fs.readFileSync(path.resolve('./Keys/server.key')),
+    cert: fs.readFileSync(path.resolve('./Keys/server.crt'))
+}
 
 app.use(bodyParser.json());
-/*
-const bcrypt = require('bcrypt');
 
-let salt = bcrypt.genSaltSync(12);
-
-let password = 'myPassword'
-let hashedPassword = bcrypt.hashSync(password, salt);
-
-console.log('My hased password is equal to -', hashedPassword);
-
-
-let compare = bcrypt.compareSync(password, hashedPassword);
-//let compare = bcrypt.compareSync('myfakepassword', hashedPassword);
-
-
-console.log('comparing password', compare)
-*/
-
-
-
-app.use('/user',userRoutes);
+app.use('/user', userRoutes);
 app.use('/private', private);
 
-const PORT = 3000;
-app.listen(PORT,()=>{
-    console.log(`server started on port ${PORT}`);
-});
+app.get('/', function (req, res) {
+    res.send('hello world')
+})
+const PORT = 443;
+
+var server = https.createServer(certOptions, app).listen(PORT, () => {
+    console.log(`Server started on ${PORT}! Go to https://localhost:${PORT}/`);
+})

@@ -35,6 +35,10 @@ class PrivateScreen extends Component{
         })
     }
     handleLockOpen= () =>{
+        this.props.navigator.push({
+            screen:'newClient.LockOpenScreen',
+            title:'Lock Open'
+        })
     }
     render(){
         return(

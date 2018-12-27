@@ -36,7 +36,7 @@ class CreateAnAccount extends Component {
     handleRegister = () =>{
         const{email,username,password, connect_id,iotdevice_id } = this.state; 
         if(validator.isEmail(email) && username.trim() && password.trim()){
-                    axios.post('http://172.17.83.103:3000/user/register', {
+                    axios.post('http://172.17.70.157:3000/user/register', {
                         email,
                         username,
                         password,

@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const {secret} = require('../config');
 
 router.post('/register',(req,res)=> {
-    
+    console.log(req.body); 
     const {email, password, username, connect_id, iotdevice_id} = req.body;
     let newUser= new User({
         email,

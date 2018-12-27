@@ -3,6 +3,7 @@ package com.newclient;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.rusel.RCTBluetoothSerial.RCTBluetoothSerialPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -12,6 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.reactnativenavigation.NavigationApplication;
+
+import com.rusel.RCTBluetoothSerial.* ;
 
  public class MainApplication extends NavigationApplication //implements ReactApplication
  {
@@ -34,6 +37,7 @@ import com.reactnativenavigation.NavigationApplication;
     // No need to add RnnPackage and MainReactPackage
      return Arrays.<ReactPackage>asList(
        // eg. new VectorIconsPackage()
+         new RCTBluetoothSerialPackage()
       );
   }
 
