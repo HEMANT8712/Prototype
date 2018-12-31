@@ -21,7 +21,7 @@ router.get('/private',authenticate, (req,res)=>{
 router.post('/registerconnect', authenticate, (req, res) => {
 
     const { username, connect_id } = req.body;
-    User.findOne({ connect_id }).then((user) => {
+    User.findOne({connect_id: req.body.connect_id}).then((user) => {
         if (user !== null) {
             return res.status(401).send();  //404- Connect ID Already Exist
         }
@@ -57,16 +57,33 @@ router.post('/registerconnect', authenticate, (req, res) => {
 
 
 router.post('/registeriotdevice', authenticate, (req, res) => {
-    const { username, iotdevice_id } = req.body;
-    User.findOne({ iotdevice_id }).then((user) => {
+    console.log(req.body); 
+    User.findOne({"iotdevice_id.serial":req.body.iotdevice_serial }).then((user) => {
         if (user !== null) {
+            console.log("Device Already Exist");
             return res.status(401).send();  //404- IoT Device ID Already Exist
         }
-        User.findOne({ username }).then((user) => {
+            console.log("Device did not Exist");
+
+        User.findOne({username: req.body.username}).then((user) => {
             if (user === null) {
                 return res.status(400).send();  //404- User not found
             }
-            user.iotdevice_id = req.body.iotdevice_id;
+
+            console.log("user Exist ");
+            var i = 0;
+            while(user.iotdevice_id[i]){
+                console.log(user.iotdevice_id[i].name);
+                i++;
+            } 
+            user.iotdevice_id[i] = []; // Clone the tags array
+            user.iotdevice_id[i].name = req.body.iotdevice_name; // Clone the tags array
+            user.iotdevice_id[i].public_key = req.body.iotdevice_public_key; // Clone the tags array
+            user.iotdevice_id[i].mac_addr = req.body.iotdevice_mac_addr; // Clone the tags array
+            user.iotdevice_id[i].serial = req.body.iotdevice_serial; // Clone the tags array
+            
+            console.log(user.iotdevice_id[i]);
+            
             user.save()
                 .then(user => {
                     if (!user) {
@@ -94,25 +111,54 @@ router.post('/registeriotdevice', authenticate, (req, res) => {
 
 router.post('/generatedevicekey', authenticate, (req, res) => {
      
-    const { username, iotdevice_id } = req.body;
+    //const { username, iotdevice_id } = req.body;
 
-    User.findOne({ iotdevice_id }).then((user) => {
+            console.log(req.body);
+    User.findOne({ "iotdevice_id.name": req.body.iotdevice_name }).then((user) => {
         if (user === null) {
             return res.status(401).send();  //404- IoT Device did not Exist
         }
-        if(user.username === username){
-            let new_secret = secret.concat(iotdevice_id);
-            let token = jwt.sign({_id:user._id},new_secret);
-            let obj = {
-                key_id: token,
-            };
-            console.log("key_id :" + token);
-            return res.status(201).send(obj);   // 201- Created
-        }
-        else{
-
+        if (user.username !== req.body.username) {
             return res.status(401).send({ error: err });
         }
+
+        var i = 0;
+
+        //console.log(user.access_control[i]);
+        while (user.access_control[i]) {
+            console.log(user.access_control[i].uname);
+            i++;
+        }
+
+        console.log("user Exist " + i);
+
+        let new_secret = secret.concat(req.body.iotdevice_name);
+        let token = jwt.sign({ _id: user._id }, new_secret);
+        let obj = {
+            key_id: token,
+        };
+        console.log("key_id :" + token);
+
+        user.access_control[i] = []; // Clone the tags array
+        user.access_control[i].uname = req.body.username; // Clone the tags array
+        user.access_control[i].iotdevice_name = req.body.iotdevice_name; // Clone the tags array
+        user.access_control[i].token_key = token; // Clone the tags array
+
+        console.log(user.access_control[i]);
+
+        user.save()
+            .then(user => {
+                if (!user) {
+                    return res.status(400).send()
+                }
+                return res.status(201).send(obj);
+            })
+            .catch(err => {
+                if (err) {
+                    return res.status(400).send({ error: err });
+                }
+                return res.status(400).send();
+            });
     }).catch((err) => {
         if (err) {
             return res.status(401).send(err);

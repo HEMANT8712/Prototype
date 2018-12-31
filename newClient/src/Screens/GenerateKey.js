@@ -15,7 +15,7 @@ class GenerateKeyScreen extends Component{
 
     state={
         username: '',
-        iotdevice_id:'',
+        iotdevice_name:'',
         uniquetoken:'',
 
     }
@@ -37,7 +37,7 @@ class GenerateKeyScreen extends Component{
     handleChangeIoTId = text => {
         this.setState(() => {
             return {
-                iotdevice_id: text,
+                iotdevice_name: text,
             }
         });
         AsyncStorage.getItem('x-auth').then((token) => {
@@ -49,20 +49,23 @@ class GenerateKeyScreen extends Component{
     }
 
     handleGenerateKey = () =>{
-        const{username, iotdevice_id} = this.state; 
+        const{username, iotdevice_name} = this.state; 
         //alert(username + iotdevice_id + this.state.uniquetoken);
-        if(username.trim() && iotdevice_id.trim()){
-                    axios.post('http://172.17.83.103:3000/private/generatedevicekey', {
+        if(username.trim() && iotdevice_name.trim()){
+                    axios.post('http://192.168.0.30:3000/private/generatedevicekey', {
                         username,
-                        iotdevice_id,
+                        iotdevice_name,
                     },{headers:{
                         'x-auth': this.state.uniquetoken
                     }})
                     .then((response) =>{
                         let token_key = response.data['key_id'];
                         if (token_key) {
-                            AsyncStorage.setItem('key_id', token_key).then(() =>{        
+                            AsyncStorage.setItem(iotdevice_name, token_key).then(() =>{        
                                 startPrivate();
+                               //AsyncStorage.getItem(iotdevice_name, (err, result) => {
+                               //     alert(result);
+                               // });
                             })
                             .catch((err) => {
                                 alert('error');
@@ -76,7 +79,7 @@ class GenerateKeyScreen extends Component{
                       //  alert('Invalid username or IoT Device_Id!');
                     });
          } else {
-             alert('Username and IoT Device_ID fields are both Required!');
+             alert('Username and IoT Device_Name fields are both Required!');
          }
     } 
     render() {
@@ -93,9 +96,9 @@ class GenerateKeyScreen extends Component{
                         value={this.state.username}
                     />
                     <Input 
-                        placeholder="IoT Device_Id" 
+                        placeholder="IoT Device_Name" 
                         onChangeText={this.handleChangeIoTId}
-                        value={this.state.iotdevice_id}
+                        value={this.state.iotdevice_name}
                     />
                 </View>
                 <View 

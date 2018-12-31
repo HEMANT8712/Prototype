@@ -47,7 +47,7 @@ class PrivateScreen extends Component{
                 <View 
                     style={{
                         alignItems:'center', 
-                        height:100, 
+                        height:70, 
                         justifyContent:'space-around',
                         }}
                 >
@@ -56,7 +56,7 @@ class PrivateScreen extends Component{
                 <View 
                     style={{
                         alignItems:'center', 
-                        height:100, 
+                        height:70, 
                         justifyContent:'space-around',
                         }}
                 >
@@ -65,7 +65,7 @@ class PrivateScreen extends Component{
                 <View 
                     style={{
                         alignItems:'center', 
-                        height:100, 
+                        height:70, 
                         justifyContent:'space-around',
                         }}
                 >
@@ -74,7 +74,7 @@ class PrivateScreen extends Component{
                 <View 
                     style={{
                         alignItems:'center', 
-                        height:100, 
+                        height:70, 
                         justifyContent:'space-around',
                         }}
                 >

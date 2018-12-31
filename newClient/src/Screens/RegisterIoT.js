@@ -14,7 +14,10 @@ class RegisterIoTScreen extends Component{
 
     state={
         username: '',
-        iotdevice_id:'',
+        iotdevice_name:'',
+        iotdevice_public_key:'',
+        iotdevice_mac_addr:'',
+        iotdevice_serial:'',
         uniquetoken:'',
 
     }
@@ -33,10 +36,10 @@ class RegisterIoTScreen extends Component{
         });
     }
 
-    handleChangeIoTId = text => {
+    handleChangeIoTName = text => {
         this.setState(() => {
             return {
-                iotdevice_id: text,
+                iotdevice_name: text,
             }
         });
         AsyncStorage.getItem('x-auth').then((token) => {
@@ -46,14 +49,38 @@ class RegisterIoTScreen extends Component{
             this.handleChangeTokenId(token);
         });
     }
+    handleChangeIoTPublicKey = text => {
+        this.setState(() => {
+            return {
+                iotdevice_public_key: text,
+            }
+        });
+    }
+    handleChangeIoTMacAddr = text => {
+        this.setState(() => {
+            return {
+                iotdevice_mac_addr: text,
+            }
+        });
+    }
+    handleChangeIoTSerial = text => {
+        this.setState(() => {
+            return {
+                iotdevice_serial: text,
+            }
+        });
+    }
 
     handleIoTRegister = () =>{
-        const{username, iotdevice_id} = this.state; 
-        //alert(username + iotdevice_id + this.state.uniquetoken);
-        if(username.trim() && iotdevice_id.trim()){
-                    axios.post('http://172.17.70.157:3000/private/registeriotdevice', {
+        const{username, iotdevice_name, iotdevice_public_key, iotdevice_mac_addr, iotdevice_serial} = this.state; 
+
+        if(username.trim() && iotdevice_name.trim() && iotdevice_mac_addr.trim() && iotdevice_public_key.trim() && iotdevice_serial.trim()){
+                    axios.post('http://192.168.0.30:3000/private/registeriotdevice', {
                         username,
-                        iotdevice_id,
+                        iotdevice_name,
+                        iotdevice_public_key,
+                        iotdevice_mac_addr,
+                        iotdevice_serial,
                     },{headers:{
                         'x-auth': this.state.uniquetoken
                     }})
@@ -81,10 +108,33 @@ class RegisterIoTScreen extends Component{
                         onChangeText={this.handleChangeUsername}
                         value={this.state.username}
                     />
+                </View>
+                <View style={styles.formContainer}>
                     <Input 
-                        placeholder="IoT Device_Id" 
-                        onChangeText={this.handleChangeIoTId}
-                        value={this.state.iotdevice_id}
+                        placeholder="IoT Device_Name" 
+                        onChangeText={this.handleChangeIoTName}
+                        value={this.state.iotdevice_name}
+                    />
+                </View>
+                <View style={styles.formContainer}>
+                    <Input 
+                        placeholder="IoT Device_Public_Key" 
+                        onChangeText={this.handleChangeIoTPublicKey}
+                        value={this.state.iotdevice_public_key}
+                    />
+                </View>
+                <View style={styles.formContainer}>
+                    <Input 
+                        placeholder="IoT Device_Mac_Addr" 
+                        onChangeText={this.handleChangeIoTMacAddr}
+                        value={this.state.iotdevice_mac_addr}
+                    />
+                </View>
+                <View style={styles.formContainer}>
+                    <Input 
+                        placeholder="IoT Device_Serial" 
+                        onChangeText={this.handleChangeIoTSerial}
+                        value={this.state.iotdevice_serial}
                     />
                 </View>
                 <View 
@@ -110,7 +160,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgb(255,255,255)',  //same result as above
     },
     formContainer:{
-        height:150,
+        height:60,
         justifyContent:'space-around',
     },
     textInput:{
@@ -123,10 +173,10 @@ const styles = StyleSheet.create({
         fontSize:18,
     },
     img1:{
-        height:100,
-        width:100,
-        marginTop: 100,
-        marginBottom:100,
+        height:50,
+        width:50,
+        marginTop: 50,
+        marginBottom:50,
     }, 
 });
 

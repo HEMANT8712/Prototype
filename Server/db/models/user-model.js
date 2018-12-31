@@ -29,15 +29,41 @@ const User = new mongoose.Schema({
         unique:true,
     },
     connect_id: {
-        type: String,
-        required:true,
+        type:String,
         trim:true,
     },
-    iotdevice_id: {
-        type: String,
-        required:true,
-        trim:true,
-    },
+    iotdevice_id:[{
+        name:{
+            type: String,
+            trim: true,
+        },
+        public_key:{
+            type: String,
+            trim: true,
+        },
+        mac_addr:{
+            type: String,
+            trim: true,
+        },
+        serial:{
+            type: String,
+            trim: true,
+        },
+    }],
+    access_control:[{
+        uname:{
+            type:String,
+            trim:true,
+        },
+        iotdevice_name:{
+            type:String,
+            trim:true,
+        },
+        token_key:{
+            type:String,
+            trim:true,
+        },
+    }]
 });
 
 User.pre('save', function(next){

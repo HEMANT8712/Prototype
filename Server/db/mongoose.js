@@ -4,7 +4,7 @@ const {databasePassword, databaseUsername} = require('../config');
 mongoose.Promise = global.Promise;
 
 mongoose
-  .connect(`mongodb://${databaseUsername}:${databasePassword}@ds237563.mlab.com:37563/auth`)
+  .connect(`mongodb://${databaseUsername}:${databasePassword}@ds145584.mlab.com:45584/prototype`)
   .then(() => {
     console.log("DB connected!");
   })

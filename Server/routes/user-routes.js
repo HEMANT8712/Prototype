@@ -7,15 +7,13 @@ const {secret} = require('../config');
 
 router.post('/register',(req,res)=> {
     console.log(req.body); 
-    const {email, password, username, connect_id, iotdevice_id} = req.body;
+
     let newUser= new User({
-        email,
-        password,
-        username,
-        connect_id,
-        iotdevice_id,
+        email: req.body.email ,
+        password: req.body.password,
+        username: req.body.username,
     });
-    console.log(req.body);
+
     newUser
         .save()
         .then(user => {
@@ -35,6 +33,7 @@ router.post('/register',(req,res)=> {
 });
 
 router.post('/login', (req,res) =>{
+    console.log(req.body); 
     const {username, password} = req.body;
     User.findOne({ username }).then((user) => {
         if(!user){

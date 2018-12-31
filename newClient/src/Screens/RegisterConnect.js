@@ -49,7 +49,7 @@ class RegisterConnectScreen extends Component{
     handleConnectRegister = () =>{
         const{username,connect_id } = this.state; 
         if(username.trim() && connect_id.trim()){
-                    axios.post('http://172.17.70.157:3000/private/registerconnect', {
+                    axios.post('http://192.168.0.30:3000/private/registerconnect', {
                         username,
                         connect_id,
                     },{headers:{

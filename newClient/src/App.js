@@ -21,7 +21,7 @@ Navigation.registerComponent('newClient.GenerateKeyScreen', ()=>GenerateKeyScree
 Navigation.registerComponent('newClient.LockOpenScreen', ()=>LockOpenScreen);
 
 AsyncStorage.getItem('x-auth').then(token => {
-  axios.get('http://172.17.70.157:3000/private/private', {
+  axios.get('http://192.168.0.30:3000/private/private', {
     headers: {
       'x-auth': token,
     },
@@ -32,12 +32,14 @@ AsyncStorage.getItem('x-auth').then(token => {
     return Navigation.startSingleScreenApp({
       screen: {
         screen: "newClient.AuthScreen"
+       // screen: "newClient.LockOpenScreen"
       },
     });
   }).catch(() => {
     return Navigation.startSingleScreenApp({
       screen: {
         screen: "newClient.AuthScreen"
+        //screen: "newClient.LockOpenScreen"
       },
     });
 

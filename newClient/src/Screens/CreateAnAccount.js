@@ -13,35 +13,22 @@ class CreateAnAccount extends Component {
       email: "",
       username: "",
       password: "",
-      connect_id: "",
-      iotdevice_id: "",
+//      connect_id: "",
+//      iotdevice_id: "",
     };
    
     handleEmailChange = email => this.setState({email});
     handlePasswordChange = password => this.setState({ password });
     handleUsernameChange = username => {
         this.setState({ username });
-
-        this.setState(() => {
-            return {
-                connect_id: username,
-            }
-        });
-        this.setState(() => {
-            return {
-                iotdevice_id: username,
-            }
-        });
     }
     handleRegister = () =>{
-        const{email,username,password, connect_id,iotdevice_id } = this.state; 
+        const{email,username,password} = this.state; 
         if(validator.isEmail(email) && username.trim() && password.trim()){
-                    axios.post('http://172.17.70.157:3000/user/register', {
+                    axios.post('http://192.168.0.30:3000/user/register', {
                         email,
                         username,
-                        password,
-                        connect_id,
-                        iotdevice_id
+                        password
                     })
                     .then((response) =>{
                        if(response.status == 201){
@@ -54,7 +41,6 @@ class CreateAnAccount extends Component {
          } else {
              alert(' Invalid Inputs !')
          }
-        //alert('You Failed');
     }
     render() {
         return (
