@@ -81,6 +81,7 @@ router.post('/registeriotdevice', authenticate, (req, res) => {
             user.iotdevice_id[i].public_key = req.body.iotdevice_public_key; // Clone the tags array
             user.iotdevice_id[i].mac_addr = req.body.iotdevice_mac_addr; // Clone the tags array
             user.iotdevice_id[i].serial = req.body.iotdevice_serial; // Clone the tags array
+            user.iotdevice_id[i].newdataupdate = false; // Clone the tags array
             
             console.log(user.iotdevice_id[i]);
             
@@ -115,17 +116,19 @@ router.post('/generatedevicekey', authenticate, (req, res) => {
 
             console.log(req.body);
     User.findOne({ "iotdevice_id.name": req.body.iotdevice_name }).then((user) => {
+     
         if (user === null) {
             return res.status(401).send();  //404- IoT Device did not Exist
         }
+
         if (user.username !== req.body.username) {
             return res.status(401).send({ error: err });
         }
-
+        console.log("user exists");     
         var i = 0;
 
-        //console.log(user.access_control[i]);
         while (user.access_control[i]) {
+
             console.log(user.access_control[i].uname);
             i++;
         }
@@ -143,6 +146,7 @@ router.post('/generatedevicekey', authenticate, (req, res) => {
         user.access_control[i].uname = req.body.username; // Clone the tags array
         user.access_control[i].iotdevice_name = req.body.iotdevice_name; // Clone the tags array
         user.access_control[i].token_key = token; // Clone the tags array
+        user.access_control[i].newdataupdate = false; // Clone the tags array
 
         console.log(user.access_control[i]);
 
@@ -166,4 +170,100 @@ router.post('/generatedevicekey', authenticate, (req, res) => {
         return res.status(401).send();
     })
 })
+
+router.post('/newiotdeviceinfo', authenticate, (req, res) => {
+    console.log(req.body);
+
+    User.findOne({ username: req.body.username }).then((user) => {
+        if (user === null) {
+            return res.status(400).send();  //404- User not found
+        }
+
+        if (user.connect_id !== req.body.connect_id) {
+            return res.status(401).send({ error: err });
+        }
+        console.log("user Exist ");
+        var i = 0;
+        
+        while (user.iotdevice_id[i]) {
+            if (user.iotdevice_id[i].newdataupdate !== true) {
+
+                console.log(user.iotdevice_id[i].name);
+
+                user.iotdevice_id[i].newdataupdate = true;
+                user.save()
+                    .then(user => {
+                        if (!user) {
+                            return res.status(400).send()
+                        }
+                        return res.status(201).send(user.iotdevice_id[i]);
+                    })
+                    .catch(err => {
+                        if (err) {
+                            return res.status(400).send({ error: err });
+                        }
+                        return res.status(400).send();
+                    });
+                break;
+            }
+            i++;
+        }
+        if (!user.iotdevice_id[i]) {
+            return res.status(400).send();
+        }
+
+    }).catch((err) => {
+        return res.status(401).send({ error: err });
+    })
+
+});
+router.post('/newiottokeninfo', authenticate, (req, res) => {
+    console.log(req.body);
+
+    User.findOne({ username: req.body.username }).then((user) => {
+        if (user === null) {
+            return res.status(400).send();  //404- User not found
+        }
+
+        if (user.connect_id !== req.body.connect_id) {
+            return res.status(401).send({ error: err });
+        }
+        console.log("user Exist ");
+        var i = 0;
+        
+        while (user.access_control[i]) {
+            if (user.access_control[i].newdataupdate !== true) {
+
+                console.log(user.access_control[i].name);
+                
+                user.access_control[i].newdataupdate = true;
+
+                user.save()
+                    .then(user => {
+                        if (!user) {
+                            return res.status(400).send()
+                        }
+                        return res.status(201).send(user.access_control[i]);
+                    })
+                    .catch(err => {
+                        if (err) {
+                            return res.status(400).send({ error: err });
+                        }
+                        return res.status(400).send();
+                    });
+                break;
+            }
+            i++;
+            console.log(i);
+        }
+        if (!user.access_control[i]) {
+            return res.status(400).send();
+        }
+
+    }).catch((err) => {
+        return res.status(401).send({ error: err });
+    })
+
+});
+
 module.exports = router;

@@ -49,6 +49,10 @@ const User = new mongoose.Schema({
             type: String,
             trim: true,
         },
+        newdataupdate:{
+            type:Boolean,
+            trim: true,
+        },
     }],
     access_control:[{
         uname:{
@@ -62,6 +66,10 @@ const User = new mongoose.Schema({
         token_key:{
             type:String,
             trim:true,
+        },
+        newdataupdate:{
+            type:Boolean,
+            trim: true,
         },
     }]
 });
